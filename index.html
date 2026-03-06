@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>⋆˚꩜｡ CSK ୨ৎ Ocean Realm ⋆𐙚 ̊.</title>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box}
+    :root{
+      --bg:#050816;
+      --bg2:#071028;
+      --card:rgba(11,18,45,.62);
+      --card2:rgba(9,15,36,.78);
+      --line:rgba(170,225,255,.12);
+      --text:#f7fbff;
+      --muted:#a9bfdc;
+      --cyan:#71e8ff;
+      --cyan2:#9af3ff;
+      --blue:#64a7ff;
+      --violet:#9d7bff;
+      --pink:#ff7fce;
+      --gold:#ffd46c;
+      --green:#67f2b3;
+      --shadow:0 18px 60px rgba(0,0,0,.42),0 0 80px rgba(113,232,255,.08),0 0 90px rgba(157,123,255,.07);
+    }
+
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden}
+
+    body{
+      background:
+        radial-gradient(circle at 10% 10%, rgba(100,167,255,.14), transparent 22%),
+        radial-gradient(circle at 85% 12%, rgba(255,127,206,.10), transparent 18%),
+        radial-gradient(circle at 50% 100%, rgba(113,232,255,.10), transparent 26%),
+        linear-gradient(135deg,#040714,#071028,#07132c,#050816);
+      background-size:100% 100%,100% 100%,100% 100%,300% 300%;
+      animation:bgMove 18s ease infinite;
+    }
+
+    @keyframes bgMove{
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+    }
+
+    .sky,.particles,.ocean{position:fixed;inset:0;pointer-events:none;z-index:0}
+
+    .sky::before,.sky::after{
+      content:"";
+      position:absolute;inset:0;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,.9) 1px, transparent 1.6px),
+        radial-gradient(circle, rgba(113,232,255,.75) 1px, transparent 2px),
+        radial-gradient(circle, rgba(255,127,206,.6) 1px, transparent 1.8px);
+      background-size:180px 180px,260px 260px,340px 340px;
+      background-position:0 0,50px 90px,110px 40px;
+      opacity:.45;
+      animation:starFloat 120s linear infinite;
+    }
+    .sky::after{opacity:.18;transform:scale(1.15);animation-duration:160s}
+
+    @keyframes starFloat{
+      from{transform:translateY(0)}
+      to{transform:translateY(-220px)}
+    }
+
+    .particles span{
+      position:absolute;
+      bottom:-100px;
+      border-radius:50%;
+      background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.92), rgba(113,232,255,.2));
+      box-shadow:0 0 22px rgba(113,232,255,.22);
+      opacity:.24;
+      animation:rising linear infinite;
+    }
+
+    @keyframes rising{
+      0%{transform:translateY(0) scale(.75);opacity:0}
+      10%{opacity:.28}
+      100%{transform:translateY(-120vh) scale(1.7);opacity:0}
+    }
+
+    .wave,.wave2,.wave3{
+      position:absolute;left:-10%;width:120%;border-radius:44% 56% 0 0;
+      background:linear-gradient(180deg, rgba(100,167,255,.10), rgba(113,232,255,.02));
+      filter:blur(10px);
+      animation:waveMove 13s ease-in-out infinite;
+    }
+    .wave{height:220px;bottom:-120px}
+    .wave2{height:180px;bottom:-96px;opacity:.7;animation-duration:18s}
+    .wave3{height:150px;bottom:-68px;opacity:.48;animation-duration:22s}
+
+    @keyframes waveMove{
+      0%,100%{transform:translateX(0) translateY(0)}
+      50%{transform:translateX(-4%) translateY(14px)}
+    }
+
+    .app{position:relative;z-index:1;max-width:1440px;margin:0 auto;padding:26px 18px 64px}
+
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px
+    }
+
+    .brand{
+      font-family:'Orbitron',sans-serif;font-size:clamp(22px,3vw,34px);font-weight:900;
+      background:linear-gradient(90deg,#ffffff,#abf0ff,#d7c1ff,#ffb0df);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      text-shadow:0 0 34px rgba(171,240,255,.18)
+    }
+
+    .top-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+    .chip{
+      padding:10px 14px;border-radius:999px;
+      background:rgba(255,255,255,.045);
+      border:1px solid rgba(255,255,255,.08);
+      color:#dff6ff;font-size:13px;font-weight:800;backdrop-filter:blur(10px)
+    }
+
+    .hero{
+      display:grid;grid-template-columns:1.1fr .9fr;gap:18px
+    }
+
+    .glass{
+      background:linear-gradient(180deg, rgba(11,18,45,.68), rgba(7,13,33,.76));
+      border:1px solid var(--line);
+      border-radius:30px;
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(16px)
+    }
+
+    .hero-main{padding:30px;position:relative;overflow:hidden;min-height:360px}
+    .hero-main::before{
+      content:"";position:absolute;right:-30px;top:-60px;width:260px;height:260px;border-radius:50%;
+      background:radial-gradient(circle, rgba(113,232,255,.20), transparent 70%);filter:blur(10px)
+    }
+    .hero-main::after{
+      content:"";position:absolute;right:70px;bottom:-90px;width:280px;height:280px;border-radius:50%;
+      background:radial-gradient(circle, rgba(255,127,206,.16), transparent 72%);filter:blur(12px)
+    }
+
+    .tag{
+      display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border-radius:999px;
+      background:rgba(113,232,255,.08);border:1px solid rgba(113,232,255,.18);
+      color:#d9fbff;font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase
+    }
+
+    .hero h1{
+      margin:20px 0 14px;font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(34px,6vw,78px);line-height:.95
+    }
+
+    .hero h1 span{
+      display:block;background:linear-gradient(90deg,#ffffff,#99ecff,#d5bbff,#ff9ed7);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent
+    }
+
+    .hero p{
+      margin:0 0 22px;max-width:760px;color:var(--muted);font-size:16px;line-height:1.8
+    }
+
+    .hero-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:760px}
+
+    .mini-stat{
+      padding:16px;border-radius:20px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08)
+    }
+    .mini-stat .k{font-size:12px;font-weight:800;color:#d7e5fb;letter-spacing:1px;text-transform:uppercase}
+    .mini-stat .v{margin-top:8px;font-family:'Orbitron',sans-serif;font-size:clamp(20px,3vw,34px);font-weight:900}
+
+    .hero-side{padding:22px;display:grid;gap:14px}
+
+    .info-box{
+      padding:20px;border-radius:24px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08)
+    }
+    .box-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+    .box-head h3{margin:0;font-size:16px}
+
+    .live-dot{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 16px var(--green);animation:pulse 1.3s infinite}
+    @keyframes pulse{0%{transform:scale(.92);opacity:.5}50%{transform:scale(1.18);opacity:1}100%{transform:scale(.92);opacity:.5}}
+
+    .member-big{font-family:'Orbitron',sans-serif;font-size:clamp(42px,6vw,72px);font-weight:900}
+    .desc{color:var(--muted);font-size:14px;line-height:1.7}
+
+    .prize{font-family:'Orbitron',sans-serif;font-size:38px;font-weight:900;color:var(--gold);text-shadow:0 0 24px rgba(255,212,108,.2)}
+
+    .small-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .small-card{padding:16px;border-radius:18px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08)}
+    .small-card .t{font-size:12px;font-weight:800;color:#d6e5fa;letter-spacing:1px;text-transform:uppercase}
+    .small-card .n{margin-top:8px;font-family:'Orbitron',sans-serif;font-size:28px;font-weight:900}
+
+    .dashboard{display:grid;grid-template-columns:1fr 390px;gap:18px;margin-top:18px}
+    .stack{display:grid;gap:18px}
+
+    .panel{padding:22px}
+    .panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+    .panel-head h2{margin:0;font-size:20px}
+    .sub{font-size:13px;color:var(--muted)}
+
+    .feed-list{display:grid;gap:12px;max-height:620px;overflow:auto;padding-right:4px}
+    .feed-list::-webkit-scrollbar{width:8px}
+    .feed-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:999px}
+
+    .join-card{
+      display:grid;grid-template-columns:60px 1fr auto;gap:14px;align-items:center;
+      padding:16px;border-radius:20px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);
+      animation:cardIn .45s ease both
+    }
+
+    @keyframes cardIn{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+    .join-card img{width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.12)}
+    .join-name{font-size:17px;font-weight:900}
+    .join-meta{margin-top:4px;color:var(--muted);font-size:13px;line-height:1.6}
+    .join-time{font-size:12px;color:#c8d9f6;white-space:nowrap}
+
+    .leaderboard{display:grid;gap:12px}
+    .rank{
+      display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:center;
+      padding:14px;border-radius:20px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08)
+    }
+    .pos{
+      width:56px;height:56px;border-radius:18px;display:grid;place-items:center;
+      font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;
+      background:linear-gradient(180deg, rgba(113,232,255,.16), rgba(157,123,255,.16));border:1px solid rgba(255,255,255,.1)
+    }
+    .rank-name{font-size:16px;font-weight:900}
+    .rank-meta{margin-top:4px;font-size:13px;color:var(--muted)}
+    .rank-score{font-family:'Orbitron',sans-serif;font-size:24px;font-weight:900}
+
+    .give-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .gift{
+      padding:18px;border-radius:20px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);text-align:center
+    }
+    .gift .p{font-size:12px;font-weight:800;color:#dce9ff;letter-spacing:1px;text-transform:uppercase}
+    .gift .a{margin-top:8px;font-family:'Orbitron',sans-serif;font-size:30px;font-weight:900}
+    .gift .m{margin-top:6px;font-size:13px;color:var(--muted)}
+
+    .popup-wrap{position:fixed;inset:0;display:grid;place-items:center;pointer-events:none;z-index:20}
+    .popup{
+      width:min(92vw,560px);padding:30px;border-radius:32px;position:relative;overflow:hidden;
+      background:linear-gradient(180deg, rgba(11,18,45,.93), rgba(7,13,33,.94));
+      border:1px solid rgba(255,255,255,.12);box-shadow:0 0 70px rgba(113,232,255,.18),0 0 90px rgba(157,123,255,.12);
+      opacity:0;transform:translateY(22px) scale(.95);transition:.35s ease
+    }
+    .popup.show{opacity:1;transform:translateY(0) scale(1)}
+    .popup::before{
+      content:"";position:absolute;left:-44px;bottom:-80px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle, rgba(113,232,255,.2), transparent 72%)
+    }
+    .popup::after{
+      content:"";position:absolute;right:-40px;top:-80px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle, rgba(255,127,206,.17), transparent 72%)
+    }
+    .popup-badge{position:absolute;top:18px;right:18px;padding:10px 14px;border-radius:999px;background:rgba(255,212,108,.08);border:1px solid rgba(255,212,108,.18);color:#ffe7a1;font-size:12px;font-weight:900}
+    .popup-row{display:flex;align-items:center;gap:16px;position:relative;z-index:1}
+    .popup img{width:92px;height:92px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.14);box-shadow:0 0 24px rgba(113,232,255,.18)}
+    .popup .caps{display:inline-flex;padding:8px 12px;border-radius:999px;background:rgba(113,232,255,.08);border:1px solid rgba(113,232,255,.18);font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
+    .popup h3{margin:12px 0 6px;font-family:'Orbitron',sans-serif;font-size:34px;line-height:1.05}
+    .popup p{margin:0;color:var(--muted);line-height:1.7}
+
+    .footer{margin-top:18px;text-align:center;color:#8ca6c6;font-size:12px}
+
+    @media (max-width:1100px){
+      .hero,.dashboard{grid-template-columns:1fr}
+      .hero-grid,.give-grid,.small-grid{grid-template-columns:1fr 1fr}
+    }
+    @media (max-width:760px){
+      .app{padding:16px 12px 40px}
+      .hero-main,.hero-side,.panel{padding:18px}
+      .hero-grid,.give-grid,.small-grid{grid-template-columns:1fr}
+      .join-card{grid-template-columns:56px 1fr}
+      .join-time{grid-column:2}
+      .rank{grid-template-columns:52px 1fr auto}
+      .popup-row{align-items:flex-start}
+      .popup img{width:78px;height:78px}
+    }
+  </style>
+</head>
+<body>
+  <div class="sky"></div>
+  <div class="particles" id="particles"></div>
+  <div class="ocean">
+    <div class="wave"></div>
+    <div class="wave2"></div>
+    <div class="wave3"></div>
+  </div>
+
+  <div class="popup-wrap">
+    <div class="popup" id="popup">
+      <div class="popup-badge">NEW MEMBER</div>
+      <div class="popup-row">
+        <img id="popupAvatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="avatar">
+        <div>
+          <span class="caps">🌊 Welcome to CSK</span>
+          <h3 id="popupName">Ocean Member</h3>
+          <p>vừa gia nhập <b>⋆˚꩜｡ CSK ୨ৎ Ocean Realm ⋆𐙚 ̊.</b><br>Chúc bạn có một hành trình thật vui trong vương quốc đại dương.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">⋆˚꩜｡ CSK ୨ৎ Ocean Realm ⋆𐙚 ̊.</div>
+      <div class="top-actions">
+        <div class="chip">🌌 Animated Background</div>
+        <div class="chip">📡 Live Join Feed</div>
+        <div class="chip">🏆 Invite Leaderboard</div>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="hero-main glass">
+        <span class="tag">💎 Discord Activity Dashboard</span>
+        <h1>Ocean Realm <span>Live Dashboard</span></h1>
+        <p>Trang web realtime dành cho server Discord của bạn với nền động, popup member mới, feed tham gia trực tiếp, leaderboard mời mem tính từ bây giờ và giao diện rõ ràng kiểu dashboard gaming hiện đại.</p>
+        <div class="hero-grid">
+          <div class="mini-stat">
+            <div class="k">Current Members</div>
+            <div class="v" id="heroMembers">597</div>
+          </div>
+          <div class="mini-stat">
+            <div class="k">Today Joins</div>
+            <div class="v" id="todayJoins">0</div>
+          </div>
+          <div class="mini-stat">
+            <div class="k">Feed Cards</div>
+            <div class="v" id="feedCards">0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-side glass">
+        <div class="info-box">
+          <div class="box-head">
+            <h3>👥 Live Member Counter</h3>
+            <span class="live-dot"></span>
+          </div>
+          <div class="member-big" id="memberCount">597</div>
+          <div class="desc">Số member hiện tại của server. Từ giờ mỗi người vào sẽ tăng ngay trên web.</div>
+        </div>
+
+        <div class="info-box">
+          <div class="box-head">
+            <h3>🎁 Giveaway Panel</h3>
+            <span class="chip">400 Robux</span>
+          </div>
+          <div class="prize">400 Robux</div>
+          <div class="desc">Panel này bạn đổi thành event kéo mem, quà tiền mặt, rank VIP hoặc giveaway riêng của server.</div>
+        </div>
+
+        <div class="info-box">
+          <div class="box-head">
+            <h3>📊 Quick Stats</h3>
+            <span class="chip">Realtime</span>
+          </div>
+          <div class="small-grid">
+            <div class="small-card">
+              <div class="t">Popup Count</div>
+              <div class="n" id="popupCount">0</div>
+            </div>
+            <div class="small-card">
+              <div class="t">Top Inviters</div>
+              <div class="n" id="inviterTotal">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="dashboard">
+      <div class="stack">
+        <div class="panel glass">
+          <div class="panel-head">
+            <div>
+              <h2>📡 Realtime Member Join Feed</h2>
+              <div class="sub">Mỗi member mới vào server sẽ hiện ngay tại đây.</div>
+            </div>
+            <div class="chip">Live</div>
+          </div>
+          <div class="feed-list" id="feedList"></div>
+        </div>
+
+        <div class="panel glass">
+          <div class="panel-head">
+            <div>
+              <h2>🎁 Event Reward Panel</h2>
+              <div class="sub">Bạn có thể thay đổi phần thưởng và nội dung theo event hiện tại.</div>
+            </div>
+            <div class="chip">Reward</div>
+          </div>
+          <div class="give-grid">
+            <div class="gift">
+              <div class="p">Top 1</div>
+              <div class="a">200</div>
+              <div class="m">Robux / quà lớn</div>
+            </div>
+            <div class="gift">
+              <div class="p">Top 2</div>
+              <div class="a">120</div>
+              <div class="m">Robux / quà vừa</div>
+            </div>
+            <div class="gift">
+              <div class="p">Top 3</div>
+              <div class="a">80</div>
+              <div class="m">Robux / quà nhỏ</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stack">
+        <div class="panel glass">
+          <div class="panel-head">
+            <div>
+              <h2>🏆 Invite Leaderboard</h2>
+              <div class="sub">Bảng xếp hạng mời mem sẽ tính từ lúc bot chạy.</div>
+            </div>
+            <div class="chip">From Now</div>
+          </div>
+          <div class="leaderboard" id="leaderboard"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">CSK Ocean Realm dashboard • chỉ cần nối bot vào /join và /stats</div>
+  </div>
+
+  <audio id="joinSound" preload="auto">
+    <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_8c6a8e5f0a.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const socket = io("http://localhost:3000");
+
+    const memberCountEl = document.getElementById("memberCount");
+    const heroMembersEl = document.getElementById("heroMembers");
+    const todayJoinsEl = document.getElementById("todayJoins");
+    const feedCardsEl = document.getElementById("feedCards");
+    const popupCountEl = document.getElementById("popupCount");
+    const inviterTotalEl = document.getElementById("inviterTotal");
+    const feedList = document.getElementById("feedList");
+    const leaderboardEl = document.getElementById("leaderboard");
+    const popup = document.getElementById("popup");
+    const popupAvatar = document.getElementById("popupAvatar");
+    const popupName = document.getElementById("popupName");
+    const joinSound = document.getElementById("joinSound");
+
+    let memberCount = 597;
+    let todayJoins = 0;
+    let popupCount = 0;
+    let feedCount = 0;
+    let inviters = {};
+
+    function fmt(n){
+      return Number(n).toLocaleString('vi-VN');
+    }
+
+    function clock(){
+      return new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
+    }
+
+    function defaultAvatar(i = 0){
+      return `https://cdn.discordapp.com/embed/avatars/${i % 5}.png`;
+    }
+
+    function updateStats(){
+      memberCountEl.textContent = fmt(memberCount);
+      heroMembersEl.textContent = fmt(memberCount);
+      todayJoinsEl.textContent = fmt(todayJoins);
+      feedCardsEl.textContent = fmt(feedCount);
+      popupCountEl.textContent = fmt(popupCount);
+      inviterTotalEl.textContent = fmt(Object.keys(inviters).length);
+    }
+
+    function addFeed(member){
+      const card = document.createElement('div');
+      card.className = 'join-card';
+      card.innerHTML = `
+        <img src="${member.avatar || defaultAvatar(feedCount)}" alt="avatar">
+        <div>
+          <div class="join-name">${member.name || 'Unknown Member'}</div>
+          <div class="join-meta">🎉 vừa gia nhập server${member.inviter ? ` • được mời bởi <b>${member.inviter}</b>` : ''}</div>
+        </div>
+        <div class="join-time">${clock()}</div>
+      `;
+      feedList.prepend(card);
+      feedCount += 1;
+      while(feedList.children.length > 18){
+        feedList.removeChild(feedList.lastElementChild);
+      }
+    }
+
+    function renderLeaderboard(){
+      leaderboardEl.innerHTML = '';
+      const arr = Object.entries(inviters).sort((a,b) => b[1] - a[1]);
+      if(arr.length === 0){
+        const d = document.createElement('div');
+        d.className = 'rank';
+        d.innerHTML = `
+          <div class="pos">#0</div>
+          <div>
+            <div class="rank-name">Chưa có dữ liệu</div>
+            <div class="rank-meta">Leaderboard sẽ hiện khi có người mời member mới.</div>
+          </div>
+          <div class="rank-score">0</div>
+        `;
+        leaderboardEl.appendChild(d);
+        return;
+      }
+      arr.slice(0,10).forEach((x,i) => {
+        const row = document.createElement('div');
+        row.className = 'rank';
+        row.innerHTML = `
+          <div class="pos">#${i + 1}</div>
+          <div>
+            <div class="rank-name">${x[0]}</div>
+            <div class="rank-meta">Invite count from now</div>
+          </div>
+          <div class="rank-score">${x[1]}</div>
+        `;
+        leaderboardEl.appendChild(row);
+      });
+    }
+
+    function showPopup(member){
+      popupAvatar.src = member.avatar || defaultAvatar(Math.floor(Math.random() * 5));
+      popupName.textContent = member.name || 'New Member';
+      popup.classList.add('show');
+      popupCount += 1;
+      joinSound.currentTime = 0;
+      joinSound.play().catch(() => {});
+      clearTimeout(window.popupTimer);
+      window.popupTimer = setTimeout(() => {
+        popup.classList.remove('show');
+      }, 4200);
+    }
+
+    function onJoin(member){
+      memberCount = member.total || (memberCount + 1);
+      todayJoins += 1;
+      if(member.inviter){
+        inviters[member.inviter] = (inviters[member.inviter] || 0) + 1;
+      }
+      addFeed(member);
+      renderLeaderboard();
+      showPopup(member);
+      updateStats();
+    }
+
+    function spawnParticles(){
+      const box = document.getElementById('particles');
+      for(let i = 0; i < 22; i++){
+        const s = document.createElement('span');
+        s.style.left = Math.random() * 100 + '%';
+        const size = 6 + Math.random() * 14;
+        s.style.width = size + 'px';
+        s.style.height = size + 'px';
+        s.style.animationDuration = 10 + Math.random() * 20 + 's';
+        s.style.animationDelay = Math.random() * 14 + 's';
+        box.appendChild(s);
+      }
+    }
+
+    spawnParticles();
+    updateStats();
+    renderLeaderboard();
+
+    socket.on('initStats', data => {
+      if(typeof data.members === 'number') memberCount = data.members;
+      if(data.invites) inviters = data.invites;
+      updateStats();
+      renderLeaderboard();
+    });
+
+    socket.on('memberJoin', member => {
+      onJoin({
+        name: member.name || member.username || 'New Member',
+        avatar: member.avatar || defaultAvatar(Math.floor(Math.random() * 5)),
+        inviter: member.inviter || '' ,
+        total: member.total
+      });
+    });
+  </script>
+</body>
+</html>
